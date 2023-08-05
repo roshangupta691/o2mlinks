@@ -8,6 +8,7 @@ import '../public/nprogress.css';
 import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Script from 'next/script';
+import UserContext from '../context/userContext';
 
 export default function App({ Component, pageProps }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +24,14 @@ export default function App({ Component, pageProps }) {
       NProgress.done();
     };
 
+    const [userData, setUserData] = useState({
+      name: '',
+      role: '',
+      bio: '',
+      avatar: '',
+      handle: '',
+    });
+
     router.events.on('routeChangeStart', handleStart);
     router.events.on('routeChangeComplete', handleComplete);
     router.events.on('routeChangeError', handleComplete);
@@ -36,6 +45,10 @@ export default function App({ Component, pageProps }) {
 
   return(
     <>
+    <UserContext.Provider value={{userData, setUserData}}>
+      <Component {...pageProps} />
+    </UserContext.Provider>
+      <Component {...pageProps} />
     <NavBar/>
     <Script strategy="lazyOnload" src={`https://www.googletagmanager.com/gtag/js?id=G-WYTYXQXVK6`} />
     <Script strategy="lazyOnload">
@@ -48,7 +61,7 @@ export default function App({ Component, pageProps }) {
                     });
                 `}
     </Script>
-    <Component {...pageProps} />
+    
     <ToastContainer />
     {isLoading && <div className="nprogress-custom-parent"><div className="nprogress-custom-bar"/></div>}
     <Footer/>
